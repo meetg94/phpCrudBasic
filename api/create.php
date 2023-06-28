@@ -1,10 +1,19 @@
 <?php
-include '../db.php';
+require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/../models/Student.php';
 
-$collection = $db->php_db_collection1; // use your collection name here
+headers('Content-Type: application/json');
+$collection = $db->first_php_db;
 
-$data = array("title" => "Hello, MongoDB!", "content" => "Creating data using PHP driver for MongoDB");
-$result = $collection->insertOne($data);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $student = new Student($data['name'], $data['major'], $data['subjects']);
+    $result = $collection->insertOne($student->to_array());
 
-echo "Inserted document with id: " . $result->getInsertedId();
+    echo json_encode(['status' => 'success', 'message' => 'Student added', 'data' => $student->to_array()]);
+}
+else {
+    http_response_code(405);
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
+}
 ?>

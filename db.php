@@ -1,5 +1,6 @@
 <?php
 require 'vendor/autoload.php'; // include Composer's autoloader
+require 'models/Student.php';
 
 $dotenv = Dotenv\Dotenv::createUnsafeImmutable(__DIR__);
 $dotenv->load();
